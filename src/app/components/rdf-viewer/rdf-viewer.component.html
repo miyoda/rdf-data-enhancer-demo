@@ -1,0 +1,11 @@
+
+<app-rdf-quad-details-viewer [quad]="mainQuad" [quadsEmitter]="quadsEmitter" [prefixes]="prefixes"></app-rdf-quad-details-viewer>
+
+<h2>Prefixes</h2>
+<ul>
+    <li *ngFor="let prefixKey of Object.keys(prefixes)">{{prefixKey}} -> {{prefixes[prefixKey].value}}</li>
+</ul>
+
+
+
+
