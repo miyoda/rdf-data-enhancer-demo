@@ -1,12 +1,12 @@
-<mat-expansion-panel [hideToggle]="quad.object.termType != 'NamedNode'">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            <app-rdf-term-viewer [term]="quad.predicate" [termQuadsEmitter]="predicateQuadsEmitter" [prefixes]="prefixes"></app-rdf-term-viewer>
+<mat-expansion-panel [hideToggle]="mainQuad.object.termType != 'NamedNode'">
+    <mat-expansion-panel-header [style.background-color]="color">
+        <mat-panel-title >
+            <app-rdf-term-viewer [term]="mainQuad.predicate" [termQuadsEmitter]="predicateQuadsEmitter" [prefixes]="prefixes"></app-rdf-term-viewer>
         </mat-panel-title>
         <mat-panel-description>
-            <app-rdf-term-viewer [term]="quad.object" [termQuadsEmitter]="objectQuadsEmitter" [prefixes]="prefixes"></app-rdf-term-viewer>
+            <app-rdf-term-viewer [term]="mainQuad.object" [termQuadsEmitter]="objectQuadsEmitter" [prefixes]="prefixes"></app-rdf-term-viewer>
         </mat-panel-description>
     </mat-expansion-panel-header>
-    <app-rdf-quad-details-viewer *ngFor="let quad of objectSameAsQuads" [quad]="quad" [quadsEmitter]="quadsEmitter" [prefixes]="prefixes"></app-rdf-quad-details-viewer>
-    <app-rdf-quad-details-viewer *ngFor="let quad of objectInfoQuads" [quad]="quad" [quadsEmitter]="quadsEmitter" [prefixes]="prefixes"></app-rdf-quad-details-viewer>
+    <app-rdf-quad-details-viewer *ngFor="let quad of objectSameAsQuads" [color]="getColorOfSubject(quad.object)" [mainQuad]="quad" [quadsEmitter]="quadsEmitter" [prefixes]="prefixes"></app-rdf-quad-details-viewer>
+    <app-rdf-quad-details-viewer *ngFor="let quad of objectInfoQuads" [color]="getColorOfSubject(quad.subject)" [mainQuad]="quad" [quadsEmitter]="quadsEmitter" [prefixes]="prefixes"></app-rdf-quad-details-viewer>
 </mat-expansion-panel>

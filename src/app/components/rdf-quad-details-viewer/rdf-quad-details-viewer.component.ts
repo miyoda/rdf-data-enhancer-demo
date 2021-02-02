@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Prefixes, Quad } from 'n3';
+import { Prefixes, Quad, Quad_Subject } from 'n3';
 import { BehaviorSubject, ReplaySubject, Subject, Subscriber } from 'rxjs';
 import { RdfUtilsService } from 'src/app/services/rdf-utils.service';
 
@@ -17,7 +17,10 @@ export class RdfQuadDetailsViewerComponent implements OnInit {
   prefixes: Prefixes
 
   @Input()
-  quad: Quad
+  mainQuad: Quad
+
+  @Input()
+  color: string
 
   predicateQuadsEmitter: ReplaySubject<Quad>
 
@@ -25,13 +28,16 @@ export class RdfQuadDetailsViewerComponent implements OnInit {
   objectInfoQuads: Quad[] = []
   objectSameAsQuads: Quad[] = []
 
+  colorsBySubject = []
+
   constructor(private rdfUtils: RdfUtilsService) {
     
   }
 
   ngOnInit(): void {
-    this.predicateQuadsEmitter = this.rdfUtils.collectQuadsOf(this.quadsEmitter, this.quad.predicate)
-    this.objectQuadsEmitter = this.rdfUtils.collectQuadsOf(this.quadsEmitter, this.quad.object)
+    this.colorsBySubject[this.mainQuad.object.value] = this.color
+    this.predicateQuadsEmitter = this.rdfUtils.collectQuadsOf(this.quadsEmitter, this.mainQuad.predicate)
+    this.objectQuadsEmitter = this.rdfUtils.collectQuadsOf(this.quadsEmitter, this.mainQuad.object)
     this.objectQuadsEmitter.subscribe(quad => {
       if (this.rdfUtils.isSame(quad.predicate)) {
         this.objectSameAsQuads.push(quad)
@@ -39,6 +45,22 @@ export class RdfQuadDetailsViewerComponent implements OnInit {
         this.objectInfoQuads.push(quad)
       }
     })
+  }
+  
+  getColorOfSubject(subject: Quad_Subject) {
+    if (!this.colorsBySubject.hasOwnProperty(subject.value)) {
+      this.colorsBySubject[subject.value] = this.getRandomColor()
+    }
+    return this.colorsBySubject[subject.value]
+  }
+
+  getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
 }

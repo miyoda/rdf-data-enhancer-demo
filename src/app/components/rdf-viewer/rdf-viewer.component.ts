@@ -21,6 +21,8 @@ export class RdfViewerComponent implements OnInit {
     DataFactory.namedNode(''),
     DataFactory.namedNode('dicocot:my-query')
   )
+  numRdfs = 0
+  status: 'PROCESSING' | 'COMPLETED' | 'ERROR' = 'PROCESSING'
 
   constructor(
     private rdfRepository: RdfRepositoryService,
@@ -33,21 +35,26 @@ export class RdfViewerComponent implements OnInit {
         this.prefixes = prefixes
         this.loadQuads()
       })
-    
-      this.quadsEmitter.subscribe(
-        (quad) => console.log(quad)
-      )
   }
 
   loadQuads(): void {
+    this.status = 'PROCESSING'
     this.rdfRepository.quadsOfCoordiantes(40.36742595009149, -3.6125209663361244)
       .subscribe(
         quad => {
           this.rdfUtils.simplifyPrefixOfQuad(quad, this.prefixes)
+          this.numRdfs++
+          console.log("Quad", quad)
           this.quadsEmitter.next(quad)
         },
-        err => console.error('ERROR', err),
-        () =>  console.log('COMPLETE'),
+        err => {
+          this.status = 'ERROR'
+          console.error("ERROR", err)
+        },
+        () => {
+          this.status = 'COMPLETED'
+          console.log("COMPLETED")
+        }
       )
   }
 

@@ -1,7 +1,6 @@
-<mat-icon>account_circle</mat-icon>
-
 <a *ngIf="term.termType == 'NamedNode'; else elseContentNotIri" [href]="rdfUtils.extendPrefixOfNamedNode(term, prefixes).value" target="_blank">
-    {{label || term.value}}
+    <span class="value-box">{{label || term.value}}</span>
 </a>
-
-<ng-template #elseContentNotIri>{{term.value}}</ng-template>
+<ng-template #elseContentNotIri>
+    <span class="value-box">{{term.value}}</span>
+</ng-template>

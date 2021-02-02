@@ -17,7 +17,7 @@ export class RdfRepositoryService {
 
   public quadsOfCoordiantes(latitude: number, longitude: number): Observable<Quad> {
     const parser = new Parser({ format: 'N-Triples' })
-    return this.eventNTriplesOfCoordinates(latitude, longitude).pipe(
+    return this.nTriplesOfCoordinates(latitude, longitude).pipe(
       mergeMap((nTriple) => this.parse(parser, nTriple))
     )
   }
@@ -32,16 +32,24 @@ export class RdfRepositoryService {
     })
   }
 
-  private eventNTriplesOfCoordinates(latitude: number, longitude: number): Observable<string> {
+  private nTriplesOfCoordinates(latitude: number, longitude: number): Observable<string> {
     const es = new EventSource(`http://localhost:8080/stream/coordinates?latitude=${latitude}&longitude=${longitude}`)
+    return this.nTriplesOfEventSource(es)
+  }
 
+  private nTriplesOfEventSource(es: EventSource): Observable<string> {
     return new Observable((observer) => {
       es.addEventListener("open", (event) => {
         console.log("EventSource.open: ", event)
       });
       es.addEventListener("message", (event) => {
-        console.debug("EventSource.message: ", event)
-        observer.next(event.data)
+        console.log("EventSource.message: ", event)
+        if (event.data == "CLOSE") {
+          observer.complete()
+          es.close()
+        } else {
+          observer.next(event.data)
+        }
       });
       es.addEventListener("error", (event) => {
         console.error("EventSource.error: ", event)
@@ -50,5 +58,4 @@ export class RdfRepositoryService {
       });
     })
   }
-
 }

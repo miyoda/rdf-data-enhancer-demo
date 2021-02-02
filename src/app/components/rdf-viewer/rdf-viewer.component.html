@@ -1,5 +1,7 @@
 
-<app-rdf-quad-details-viewer [quad]="mainQuad" [quadsEmitter]="quadsEmitter" [prefixes]="prefixes"></app-rdf-quad-details-viewer>
+<h2>Num rdfs: {{numRdfs}} ({{status}})</h2>
+
+<app-rdf-quad-details-viewer [mainQuad]="mainQuad" color="primary" [quadsEmitter]="quadsEmitter" [prefixes]="prefixes"></app-rdf-quad-details-viewer>
 
 <h2>Prefixes</h2>
 <ul>
